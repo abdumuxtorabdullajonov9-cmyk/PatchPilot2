@@ -1,0 +1,33 @@
+rules:
+  - id: hardcoded-secret-assignment
+    languages: [python]
+    severity: ERROR
+    message: "Hardcoded secret-like value assigned to a variable. Store secrets in environment variables instead."
+    patterns:
+      - pattern: $VAR = "..."
+      - metavariable-regex:
+          metavariable: $VAR
+          regex: (?i)(password|secret|api_key|apikey|token|access_key)
+
+  - id: sql-injection-string-concat
+    languages: [python]
+    severity: ERROR
+    message: "Possible SQL Injection: query built via string concatenation and passed to execute()."
+    patterns:
+      - pattern-either:
+          - pattern: |
+              $Q = "..." + $A
+              ...
+              $CURSOR.execute($Q)
+          - pattern: |
+              $Q = "..." + $A + "..."
+              ...
+              $CURSOR.execute($Q)
+          - pattern: $CURSOR.execute("..." + $A + "...")
+          - pattern: $CURSOR.execute("..." + $A)
+
+  - id: insecure-yaml-load
+    languages: [python]
+    severity: ERROR
+    message: "yaml.load() without a safe Loader allows arbitrary code execution. Use yaml.safe_load() instead."
+    pattern: yaml.load($X)

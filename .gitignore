@@ -1,0 +1,9 @@
+.env
+__pycache__/
+*.pyc
+.semgrep_cache/
+history/*.db
+.venv/
+venv/
+.idea/
+.vscode/
